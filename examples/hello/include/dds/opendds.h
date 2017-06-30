@@ -50,7 +50,7 @@ namespace dds {
 			DDS::DomainParticipant* instance);
 		virtual ~OpenDDSDomainParticipant();
 		
-		Publisher* create_publisher(
+		virtual Publisher* create_publisher(
 			const PublisherQos& qos,
 			PublisherListener* a_listener,
 			const StatusMask mask);
@@ -67,7 +67,7 @@ namespace dds {
 			const Subscriber* s);
 		Subscriber* get_builtin_subscriber();
 		*/
-		Topic* create_topic(
+		virtual Topic* create_topic(
 			const char* topic_name,
 			const char* type_name,
 			const TopicQos& qos,
@@ -95,8 +95,8 @@ namespace dds {
 			const StringSeq* expression_parameters);
 		ReturnCode_t delete_multitopic(
 			const MultiTopic* a_multitopic);
-		*/
-		ReturnCode_t delete_contained_entities();
+			*/
+		virtual ReturnCode_t delete_contained_entities();
 		/*
 		ReturnCode_t set_qos(
 			const DomainParticipantQos& qos);
@@ -393,6 +393,7 @@ namespace dds {
 		static void convert(const WriterDataLifecycleQosPolicy& source, DDS::WriterDataLifecycleQosPolicy target);
 		static void convert(const DDS::WriterDataLifecycleQosPolicy& source, WriterDataLifecycleQosPolicy target);
 	};
+
 };
 
 #endif /* __DDS_OPENDDS__ */

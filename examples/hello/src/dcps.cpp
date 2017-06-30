@@ -6,9 +6,8 @@
 #include <fstream>
 #include <stdexcept>
 
-#include <json/json.h>
-
 #include <dds/dcps.h>
+#include <dds/opendds.h>
 
 #define DEBUG	1
 
@@ -19,7 +18,7 @@
 
 namespace dds {
 
-class DomainParticipantFactory* TheParticipantFactory = DomainParticipantFactory::get_instance();
+class DomainParticipantFactory* DDSParticipantFactory = DomainParticipantFactory::get_instance();
 const HANDLE_TYPE_NATIVE HANDLE_NIL_NATIVE			= 0;
 
 const DomainParticipantQos PARTICIPANT_QOS_DEFAULT;
@@ -638,8 +637,8 @@ PresentationQosPolicy::~PresentationQosPolicy() {
 }
 
 DeadlineQosPolicy::DeadlineQosPolicy() {
-	this->period.sec = DURATION_INFINITE_SEC;
-	this->period.nanosec = DURATION_INFINITE_NSEC;
+	period.sec = DURATION_INFINITE_SEC;
+	period.nanosec = DURATION_INFINITE_NSEC;
 }
 
 DeadlineQosPolicy::DeadlineQosPolicy(Duration_t& period) {
@@ -697,7 +696,7 @@ LivelinessQosPolicy::LivelinessQosPolicy() {
 }
 
 LivelinessQosPolicy::LivelinessQosPolicy(LivelinessQosPolicyKind kind, Duration_t& lease_duration) {
-	this->kind = kind;
+	this->kind = AUTOMATIC_LIVELINESS_QOS;
 	this->lease_duration = lease_duration;
 }
 
@@ -1309,6 +1308,7 @@ Publisher* DomainParticipant::create_publisher(
 	const PublisherQos& qos,
 	PublisherListener* a_listener,
 	const StatusMask mask) {
+	std::cout<<"hi everyone, I am create_publisher"<<std::endl;
 
 	return NULL;
 }
@@ -1482,6 +1482,7 @@ void* DomainParticipantFactory::config = NULL;
 void* DomainParticipantFactory::dl_handle = NULL;
 
 DomainParticipantFactory* DomainParticipantFactory::get_instance() {
+/*
 	if(DomainParticipantFactory::instance == NULL) {
 		char* h = std::getenv("COMMONDDS_HOME");
 		char* home = NULL;
@@ -1577,6 +1578,8 @@ DomainParticipantFactory* DomainParticipantFactory::get_instance() {
 	}
 
 	return DomainParticipantFactory::instance;
+*/
+	return new OpenDDSDomainParticipantFactory();
 }
 
 DomainParticipantFactory::DomainParticipantFactory() {

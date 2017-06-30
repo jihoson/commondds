@@ -20,7 +20,7 @@ namespace dds {
 	struct DataWriterQos;
 	struct DataReaderQos;
 
-	extern class DomainParticipantFactory* TheParticipantFactory;
+	extern class DomainParticipantFactory* DDSParticipantFactory;
 	extern const DomainParticipantQos PARTICIPANT_QOS_DEFAULT;
 	extern const TopicQos TOPIC_QOS_DEFAULT;
 	extern const PublisherQos PUBLISHER_QOS_DEFAULT;
@@ -1279,6 +1279,7 @@ namespace dds {
 
 	public:
 		static DomainParticipantFactory* get_instance();
+		static void* get_dl_handle();
 
 	protected:
 		DomainParticipantFactory();

@@ -13,7 +13,6 @@ extern "C" {
 
 OpenDDSDomainParticipantFactory::OpenDDSDomainParticipantFactory() {
 	instance = TheParticipantFactory;
-	printf("OpenDDS instance: %p\n", instance);
 }
 
 OpenDDSDomainParticipantFactory::~OpenDDSDomainParticipantFactory() {
@@ -39,7 +38,9 @@ DomainParticipant* OpenDDSDomainParticipantFactory::create_participant(
 
 ReturnCode_t OpenDDSDomainParticipantFactory::delete_participant(const DomainParticipant* a_participant) {
 	OpenDDSDomainParticipant* a_participant2 = (OpenDDSDomainParticipant*) a_participant;
-	return (ReturnCode_t)instance->delete_participant(a_participant2->get_instance());
+	ReturnCode_t rt = instance->delete_participant(a_participant2->get_instance());
+	TheServiceParticipant->shutdown();
+	return rt;
 }
 
 DomainParticipant* OpenDDSDomainParticipantFactory::lookup_participant(DomainId_t domain_id) {
@@ -298,8 +299,8 @@ void OpenDDSTopicQos::convert(const TopicQos& source, DDS::TopicQos& target) {
 	OpenDDSLatencyBudgetQosPolicy::convert(source.latency_budget, target.latency_budget);
 	OpenDDSLivelinessQosPolicy::convert(source.liveliness, target.liveliness);
 	OpenDDSReliabilityQosPolicy::convert(source.reliability, target.reliability);
-	OpenDDSDestinationOrderQosPolicy::convert(source.destination_order, target.destination_order);
 	OpenDDSResourceLimitsQosPolicy::convert(source.resource_limits, target.resource_limits);
+	OpenDDSDestinationOrderQosPolicy::convert(source.destination_order, target.destination_order);
 	OpenDDSHistoryQosPolicy::convert(source.history, target.history);
 	OpenDDSLifespanQosPolicy::convert(source.lifespan, target.lifespan);
 	OpenDDSOwnershipQosPolicy::convert(source.ownership, target.ownership);
@@ -314,8 +315,8 @@ void OpenDDSTopicQos::convert(const DDS::TopicQos& source, TopicQos& target) {
 	OpenDDSLatencyBudgetQosPolicy::convert(source.latency_budget, target.latency_budget);
 	OpenDDSLivelinessQosPolicy::convert(source.liveliness, target.liveliness);
 	OpenDDSReliabilityQosPolicy::convert(source.reliability, target.reliability);
-	OpenDDSDestinationOrderQosPolicy::convert(source.destination_order, target.destination_order);
 	OpenDDSResourceLimitsQosPolicy::convert(source.resource_limits, target.resource_limits);
+	OpenDDSDestinationOrderQosPolicy::convert(source.destination_order, target.destination_order);
 	OpenDDSHistoryQosPolicy::convert(source.history, target.history);
 	OpenDDSLifespanQosPolicy::convert(source.lifespan, target.lifespan);
 	OpenDDSOwnershipQosPolicy::convert(source.ownership, target.ownership);
@@ -465,15 +466,6 @@ void OpenDDSOwnershipQosPolicy::convert(const DDS::OwnershipQosPolicy& source, O
 	target.kind = (OwnershipQosPolicyKind) source.kind;
 }
 
-void OpenDDSWriterDataLifecycleQosPolicy::convert(const WriterDataLifecycleQosPolicy& source, DDS::WriterDataLifecycleQosPolicy target) {
-	CORBA::Boolean b = (CORBA::Boolean)source.autodispose_unregistered_instances;
-	target.autodispose_unregistered_instances = b;
-}
-void OpenDDSWriterDataLifecycleQosPolicy::convert(const DDS::WriterDataLifecycleQosPolicy& source, WriterDataLifecycleQosPolicy target) {
-	bool b = (bool)source.autodispose_unregistered_instances;
-	target.autodispose_unregistered_instances = b;
-}
-
 OpenDDSPublisherListener::OpenDDSPublisherListener(dds::PublisherListener* p) {
 	this->listener = p;
 }
@@ -580,6 +572,14 @@ void OpenDDSOwnershipStrengthQosPolicy::convert(const DDS::OwnershipStrengthQosP
 	target.value = (int32_t) source.value;
 }
 
+void OpenDDSWriterDataLifecycleQosPolicy::convert(const WriterDataLifecycleQosPolicy& source, DDS::WriterDataLifecycleQosPolicy target) {
+	CORBA::Boolean b = (CORBA::Boolean)source.autodispose_unregistered_instances;
+	target.autodispose_unregistered_instances = b;
+}
+void OpenDDSWriterDataLifecycleQosPolicy::convert(const DDS::WriterDataLifecycleQosPolicy& source, WriterDataLifecycleQosPolicy target) {
+	bool b = (bool)source.autodispose_unregistered_instances;
+	target.autodispose_unregistered_instances = b;
+}
 OpenDDSDataWriterListener::OpenDDSDataWriterListener(dds::DataWriterListener* l) {
 	listener = l;
 }

@@ -1,0 +1,19 @@
+{
+    "files.associations": {
+        "dcps_func.h": "c",
+        "cpsdcps.h": "c",
+        "libio.h": "c",
+        "hello.hpp": "c",
+        "foo.h": "c",
+        "typesupport.h": "c",
+        "module_common.h": "c",
+        "data.h": "c",
+        "message.h": "c",
+        "rtps_discovered.h": "c",
+        "stdio2.h": "c",
+        "core.h": "c",
+        "qos_policy.h": "c",
+        "service.h": "c",
+        "string2.h": "c"
+    }
+}
